@@ -1,0 +1,14 @@
+{
+    "devnet": [
+        {
+            "address": "",
+            "label": "SC"
+        }
+    ],
+    "mainnet": [
+        {
+            "address": "",
+            "label": "SC"
+        }
+    ]
+}
