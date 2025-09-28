@@ -16,8 +16,8 @@ target/**
 *report.json
 *.lock
 
-# Interaction reports
-interaction/reports/
+# Interaction scripts
+interaction/
 
 # from output folder, ignore all except *abi.json
 /output/*
