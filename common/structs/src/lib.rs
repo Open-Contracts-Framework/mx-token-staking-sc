@@ -1,6 +1,6 @@
 #![no_std]
 
-// use multiversx_sc::{derive_imports::*, imports::*};
+use multiversx_sc::{derive_imports::*, imports::*};
 
 // pub type Admin<M> = ManagedAddress<M>;
 
@@ -11,14 +11,46 @@
 //     Active,
 // }
 
-// #[type_abi]
-// #[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, Clone, ManagedVecItem)]
-// pub struct TokenAmount<M: ManagedTypeApi> {
-//     pub token: TokenIdentifier<M>,
-//     pub amount: BigUint<M>,
-// }
-// impl<M: ManagedTypeApi> TokenAmount<M> {
-//     pub fn new(token: TokenIdentifier<M>, amount: BigUint<M>) -> Self {
-//         TokenAmount { token, amount }
-//     }
-// }
+#[type_abi]
+#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, Clone, Eq, Debug, ManagedVecItem)]
+pub struct Farm<M: ManagedTypeApi> {
+    pub staked_token: EgldOrEsdtTokenIdentifier<M>,
+    pub share_token: TokenIdentifier<M>,
+    pub reward_token: EgldOrEsdtTokenIdentifier<M>,
+    pub rewards_reserve: BigUint<M>,
+    pub start_ts_ms: u64,
+    pub end_ts_ms: u64,
+    pub reward_per_sec: BigUint<M>,
+    pub reward_per_share: BigUint<M>,
+}
+
+#[type_abi]
+#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, Clone, Eq, Debug, ManagedVecItem)]
+pub struct ShareToken<M: ManagedTypeApi> {
+    pub nonce: u64,
+    pub amount: BigUint<M>,
+}
+
+#[type_abi]
+#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, Clone, Eq, Debug, ManagedVecItem)]
+pub struct ShareTokenAttributes<M: ManagedTypeApi> {
+    pub update_ts_ms: u64,
+    pub token_supply: BigUint<M>,
+}
+
+#[type_abi]
+#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, Clone, Eq, Debug, ManagedVecItem)]
+pub struct ShareTokenMergedData<M: ManagedTypeApi> {
+    pub update_ts_ms: u64,
+    pub token_supply: BigUint<M>,
+    pub reward_amount: BigUint<M>,
+}
+
+#[type_abi]
+#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, Clone, Eq, Debug, ManagedVecItem)]
+pub struct ShareTokenMergedDataWithBurns<M: ManagedTypeApi> {
+    pub update_ts_ms: u64,
+    pub token_supply: BigUint<M>,
+    pub reward_amount: BigUint<M>,
+    pub token_burns: ManagedVec<M, ShareToken<M>>,
+}

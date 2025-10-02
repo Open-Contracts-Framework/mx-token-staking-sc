@@ -1,11 +1,11 @@
 [package]
-name = "template-meta"
+name = "tokenstaking-meta"
 version = "0.0.1"
 authors = [ "Kostas Tzoumpas <tzoumpas.ks@gmail.com>"]
 edition = "2021"
 publish = false
 
-[dependencies.template]
+[dependencies.tokenstaking]
 path = ".."
 
 [dependencies.multiversx-sc-meta-lib]

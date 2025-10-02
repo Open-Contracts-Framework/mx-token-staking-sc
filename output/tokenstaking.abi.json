@@ -1,0 +1,516 @@
+{
+    "buildInfo": {
+        "rustc": {
+            "version": "1.86.0",
+            "commitHash": "05f9846f893b09a1be1fc8560e33fc3c815cfecb",
+            "commitDate": "2025-03-31",
+            "channel": "Stable",
+            "short": "rustc 1.86.0 (05f9846f8 2025-03-31)"
+        },
+        "contractCrate": {
+            "name": "tokenstaking",
+            "version": "0.0.1"
+        },
+        "framework": {
+            "name": "multiversx-sc",
+            "version": "0.62.0"
+        }
+    },
+    "docs": [
+        "A Smart Contract that allows users to stake tokens and earn rewards over time.",
+        "- Users can stake a specific token and receive share tokens in return that represent their stake.",
+        "- Users can claim rewards based on the time they have staked their tokens and the fixed reward rate.",
+        "- Users can unstake their tokens by burning their share tokens.",
+        "- During staking or unstaking, any pending rewards are automatically claimed and sent to the user.",
+        "- Also, if multiple share tokens are sent, they are merged into a single share token to reduce NFT clutter.",
+        "- Farm Owner is responsible to fund the rewards reserve and set the farm parameters."
+    ],
+    "name": "Template",
+    "constructor": {
+        "inputs": [],
+        "outputs": []
+    },
+    "upgradeConstructor": {
+        "inputs": [],
+        "outputs": []
+    },
+    "endpoints": [
+        {
+            "name": "addAdmins",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "addresses",
+                    "type": "variadic<Address>",
+                    "multi_arg": true
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "name": "removeAdmins",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "addresses",
+                    "type": "variadic<Address>",
+                    "multi_arg": true
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "name": "isAdmin",
+            "mutability": "readonly",
+            "inputs": [
+                {
+                    "name": "address",
+                    "type": "Address"
+                }
+            ],
+            "outputs": [
+                {
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "getAdmins",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "variadic<Address>",
+                    "multi_result": true
+                }
+            ]
+        },
+        {
+            "name": "pause",
+            "mutability": "mutable",
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "name": "unpause",
+            "mutability": "mutable",
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "name": "isPaused",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "createFarm",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [
+                {
+                    "name": "staked_token",
+                    "type": "EgldOrEsdtTokenIdentifier"
+                },
+                {
+                    "name": "reward_token",
+                    "type": "EgldOrEsdtTokenIdentifier"
+                },
+                {
+                    "name": "start_ts_ms",
+                    "type": "u64"
+                },
+                {
+                    "name": "end_ts_ms",
+                    "type": "u64"
+                },
+                {
+                    "name": "reward_per_sec",
+                    "type": "BigUint"
+                },
+                {
+                    "name": "reward_per_share",
+                    "type": "BigUint"
+                },
+                {
+                    "name": "share_token_display_name",
+                    "type": "bytes"
+                },
+                {
+                    "name": "share_token_ticker",
+                    "type": "bytes"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "name": "modifyStartTs",
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "new_start_ts_ms",
+                    "type": "u64"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "name": "modifyEndTs",
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "new_end_ts_ms",
+                    "type": "u64"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "name": "modifyRewards",
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "new_reward_per_sec",
+                    "type": "BigUint"
+                },
+                {
+                    "name": "new_reward_per_share",
+                    "type": "BigUint"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "name": "depositRewards",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "name": "withdrawRewards",
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "amount",
+                    "type": "BigUint"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "name": "getFarmInfo",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "Farm"
+                }
+            ]
+        },
+        {
+            "name": "stake",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "name": "unstake",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [
+                {
+                    "name": "opt_unstake_amount",
+                    "type": "optional<BigUint>",
+                    "multi_arg": true
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "name": "claimRewards",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "name": "getClaimableRewards",
+            "mutability": "readonly",
+            "inputs": [
+                {
+                    "name": "share_tokens",
+                    "type": "variadic<ShareToken>",
+                    "multi_arg": true
+                }
+            ],
+            "outputs": [
+                {
+                    "type": "BigUint"
+                }
+            ]
+        }
+    ],
+    "events": [
+        {
+            "identifier": "adminsAdded",
+            "inputs": [
+                {
+                    "name": "admins",
+                    "type": "variadic<Address>",
+                    "indexed": true
+                }
+            ]
+        },
+        {
+            "identifier": "adminsRemoved",
+            "inputs": [
+                {
+                    "name": "admins",
+                    "type": "variadic<Address>",
+                    "indexed": true
+                }
+            ]
+        },
+        {
+            "identifier": "paused",
+            "inputs": []
+        },
+        {
+            "identifier": "unpaused",
+            "inputs": []
+        },
+        {
+            "identifier": "farmCreated",
+            "inputs": [
+                {
+                    "name": "staked_token",
+                    "type": "EgldOrEsdtTokenIdentifier",
+                    "indexed": true
+                },
+                {
+                    "name": "reward_token",
+                    "type": "EgldOrEsdtTokenIdentifier",
+                    "indexed": true
+                },
+                {
+                    "name": "start_ts_ms",
+                    "type": "u64",
+                    "indexed": true
+                },
+                {
+                    "name": "end_ts_ms",
+                    "type": "u64",
+                    "indexed": true
+                },
+                {
+                    "name": "reward_per_sec",
+                    "type": "BigUint",
+                    "indexed": true
+                },
+                {
+                    "name": "reward_per_share",
+                    "type": "BigUint",
+                    "indexed": true
+                },
+                {
+                    "name": "share_token",
+                    "type": "TokenIdentifier",
+                    "indexed": true
+                }
+            ]
+        },
+        {
+            "identifier": "startTsModified",
+            "inputs": [
+                {
+                    "name": "new_start_ts_ms",
+                    "type": "u64",
+                    "indexed": true
+                }
+            ]
+        },
+        {
+            "identifier": "endTsModified",
+            "inputs": [
+                {
+                    "name": "new_end_ts_ms",
+                    "type": "u64",
+                    "indexed": true
+                }
+            ]
+        },
+        {
+            "identifier": "rewardsModified",
+            "inputs": [
+                {
+                    "name": "new_reward_per_sec",
+                    "type": "BigUint",
+                    "indexed": true
+                },
+                {
+                    "name": "new_reward_per_share",
+                    "type": "BigUint",
+                    "indexed": true
+                }
+            ]
+        },
+        {
+            "identifier": "rewardsDeposited",
+            "inputs": [
+                {
+                    "name": "amount",
+                    "type": "BigUint",
+                    "indexed": true
+                }
+            ]
+        },
+        {
+            "identifier": "rewardsWithdrawn",
+            "inputs": [
+                {
+                    "name": "amount",
+                    "type": "BigUint",
+                    "indexed": true
+                }
+            ]
+        },
+        {
+            "identifier": "staked",
+            "inputs": [
+                {
+                    "name": "address",
+                    "type": "Address",
+                    "indexed": true
+                },
+                {
+                    "name": "staked_amount",
+                    "type": "BigUint",
+                    "indexed": true
+                },
+                {
+                    "name": "share_token_supply",
+                    "type": "BigUint",
+                    "indexed": true
+                },
+                {
+                    "name": "reward_amount",
+                    "type": "BigUint",
+                    "indexed": true
+                }
+            ]
+        },
+        {
+            "identifier": "unstaked",
+            "inputs": [
+                {
+                    "name": "address",
+                    "type": "Address",
+                    "indexed": true
+                },
+                {
+                    "name": "unstaked_amount",
+                    "type": "BigUint",
+                    "indexed": true
+                },
+                {
+                    "name": "share_token_supply",
+                    "type": "BigUint",
+                    "indexed": true
+                },
+                {
+                    "name": "reward_amount",
+                    "type": "BigUint",
+                    "indexed": true
+                }
+            ]
+        },
+        {
+            "identifier": "rewardsClaimed",
+            "inputs": [
+                {
+                    "name": "address",
+                    "type": "Address",
+                    "indexed": true
+                },
+                {
+                    "name": "amount",
+                    "type": "BigUint",
+                    "indexed": true
+                }
+            ]
+        }
+    ],
+    "esdtAttributes": [],
+    "hasCallback": true,
+    "types": {
+        "Farm": {
+            "type": "struct",
+            "fields": [
+                {
+                    "name": "staked_token",
+                    "type": "EgldOrEsdtTokenIdentifier"
+                },
+                {
+                    "name": "share_token",
+                    "type": "TokenIdentifier"
+                },
+                {
+                    "name": "reward_token",
+                    "type": "EgldOrEsdtTokenIdentifier"
+                },
+                {
+                    "name": "rewards_reserve",
+                    "type": "BigUint"
+                },
+                {
+                    "name": "start_ts_ms",
+                    "type": "u64"
+                },
+                {
+                    "name": "end_ts_ms",
+                    "type": "u64"
+                },
+                {
+                    "name": "reward_per_sec",
+                    "type": "BigUint"
+                },
+                {
+                    "name": "reward_per_share",
+                    "type": "BigUint"
+                }
+            ]
+        },
+        "ShareToken": {
+            "type": "struct",
+            "fields": [
+                {
+                    "name": "nonce",
+                    "type": "u64"
+                },
+                {
+                    "name": "amount",
+                    "type": "BigUint"
+                }
+            ]
+        }
+    }
+}

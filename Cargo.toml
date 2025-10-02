@@ -1,5 +1,5 @@
 [package]
-name = "template"
+name = "tokenstaking"
 version = "0.0.1"
 authors = [ "Kostas Tzoumpas <tzoumpas.ks@gmail.com>"]
 edition = "2021"

@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                            7
-// Async Callback (empty):               1
-// Total number of exported functions:  10
+// Endpoints:                           18
+// Async Callback:                       1
+// Total number of exported functions:  21
 
 #![no_std]
 
@@ -16,7 +16,7 @@ multiversx_sc_wasm_adapter::allocator!();
 multiversx_sc_wasm_adapter::panic_handler!();
 
 multiversx_sc_wasm_adapter::endpoints! {
-    template
+    tokenstaking
     (
         init => init
         upgrade => upgrade
@@ -27,7 +27,18 @@ multiversx_sc_wasm_adapter::endpoints! {
         pause => pause
         unpause => unpause
         isPaused => is_paused
+        createFarm => create_farm
+        modifyStartTs => modify_start_ts
+        modifyEndTs => modify_end_ts
+        modifyRewards => modify_rewards
+        depositRewards => deposit_rewards
+        withdrawRewards => withdraw_rewards
+        getFarmInfo => get_farm_info
+        stake => stake
+        unstake => unstake
+        claimRewards => claim_rewards_endpoint
+        getClaimableRewards => get_claimable_rewards
     )
 }
 
-multiversx_sc_wasm_adapter::async_callback_empty! {}
+multiversx_sc_wasm_adapter::async_callback! { tokenstaking }
