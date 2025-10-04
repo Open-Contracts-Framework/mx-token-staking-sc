@@ -25,7 +25,7 @@ pub trait RewardsModule:
         self.share_token().nft_create_and_send(
             &caller,
             token_merged_data.token_supply.clone(),
-            &self.attributes_to_buffer(current_timestamp_ms, token_merged_data.token_supply),
+            &self.attributes_to_buffer(current_timestamp_ms),
         );
     }
 
@@ -34,6 +34,7 @@ pub trait RewardsModule:
     #[view(getClaimableRewards)]
     fn get_claimable_rewards(
         &self,
+        address: &ManagedAddress,
         share_tokens: MultiValueEncoded<ShareTokenType<Self::Api>>,
     ) -> BigUint {
         let current_timestamp_ms = self.blockchain().get_block_timestamp_ms();
@@ -42,7 +43,7 @@ pub trait RewardsModule:
         for share_token in share_tokens.into_iter() {
             let (nonce, amount) = share_token.into_tuple();
             rewards += self
-                .calculate_reward(nonce, &amount, current_timestamp_ms)
+                .calculate_reward(address, nonce, &amount, current_timestamp_ms)
                 .reward_amount;
         }
 
@@ -87,16 +88,23 @@ pub trait RewardsModule:
         token_merged_data
     }
 
-    #[view(test)]
-    fn get_share_token_attributes(&self, nonce: u64) -> ShareTokenAttributes<Self::Api> {
-        self.share_token().get_token_attributes(nonce)
+    fn get_share_token_attributes(
+        &self,
+        address: &ManagedAddress,
+        nonce: u64,
+    ) -> ShareTokenAttributes {
+        ShareTokenAttributes {
+            update_ts_ms: self
+                .blockchain()
+                .get_esdt_token_data(address, &self.share_token().get_token_id(), nonce)
+                .attributes
+                .parse_as_u64()
+                .unwrap_or(0),
+        }
     }
 
-    fn attributes_to_buffer(&self, update_ts_ms: u64, token_supply: BigUint) -> ManagedBuffer {
-        let share_token_attributes = ShareTokenAttributes {
-            update_ts_ms,
-            token_supply,
-        };
+    fn attributes_to_buffer(&self, update_ts_ms: u64) -> ManagedBuffer {
+        let share_token_attributes = ShareTokenAttributes { update_ts_ms };
 
         let mut attributes = ManagedBuffer::new();
         let _ = share_token_attributes.top_encode(&mut attributes);
@@ -118,7 +126,12 @@ pub trait RewardsModule:
 
             require!(token == share_token_id, ERROR_INVALID_SHARE_TOKEN);
 
-            let share_token_merged_data = self.calculate_reward(nonce, &amount, timestamp_ms);
+            let share_token_merged_data = self.calculate_reward(
+                &self.blockchain().get_sc_address(),
+                nonce,
+                &amount,
+                timestamp_ms,
+            );
 
             total_rewards_amount += share_token_merged_data.reward_amount;
             total_token_supply += share_token_merged_data.token_supply;
@@ -135,11 +148,12 @@ pub trait RewardsModule:
 
     fn calculate_reward(
         &self,
+        address: &ManagedAddress,
         token_nonce: u64,
         amount: &BigUint,
         timestamp_ms: u64,
     ) -> ShareTokenMergedData<Self::Api> {
-        let share_token_attributes = self.get_share_token_attributes(token_nonce);
+        let share_token_attributes = self.get_share_token_attributes(address, token_nonce);
 
         let rewards_per_sec = self.reward_per_sec().get();
         let rewards_per_share = self.reward_per_share().get();

@@ -257,6 +257,10 @@
             "mutability": "readonly",
             "inputs": [
                 {
+                    "name": "address",
+                    "type": "Address"
+                },
+                {
                     "name": "share_tokens",
                     "type": "variadic<multi<u64,BigUint>>",
                     "multi_arg": true
@@ -265,21 +269,6 @@
             "outputs": [
                 {
                     "type": "BigUint"
-                }
-            ]
-        },
-        {
-            "name": "test",
-            "mutability": "readonly",
-            "inputs": [
-                {
-                    "name": "nonce",
-                    "type": "u64"
-                }
-            ],
-            "outputs": [
-                {
-                    "type": "ShareTokenAttributes"
                 }
             ]
         }
@@ -510,19 +499,6 @@
                 },
                 {
                     "name": "reward_per_share",
-                    "type": "BigUint"
-                }
-            ]
-        },
-        "ShareTokenAttributes": {
-            "type": "struct",
-            "fields": [
-                {
-                    "name": "update_ts_ms",
-                    "type": "u64"
-                },
-                {
-                    "name": "token_supply",
                     "type": "BigUint"
                 }
             ]

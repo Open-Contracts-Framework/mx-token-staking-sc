@@ -43,7 +43,7 @@ pub trait StakingModule:
         self.share_token().nft_create_and_send(
             &caller,
             new_staked_amount.clone(),
-            &self.attributes_to_buffer(current_timestamp_ms, new_staked_amount.clone()),
+            &self.attributes_to_buffer(current_timestamp_ms),
         );
 
         self.event_staked(
@@ -80,10 +80,7 @@ pub trait StakingModule:
             self.share_token().nft_create_and_send(
                 &caller,
                 &token_merged_data.token_supply - &unstake_amount,
-                &self.attributes_to_buffer(
-                    current_timestamp_ms,
-                    &token_merged_data.token_supply - &unstake_amount,
-                ),
+                &self.attributes_to_buffer(current_timestamp_ms),
             );
         }
 
