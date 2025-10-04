@@ -2,6 +2,7 @@ use errors::{ERROR_INVALID_SHARE_TOKEN, ERROR_NOT_ENOUGH_REWARDS, ERROR_NO_REWAR
 use multiversx_sc::imports::*;
 use structs::{
     ShareToken, ShareTokenAttributes, ShareTokenMergedData, ShareTokenMergedDataWithBurns,
+    ShareTokenType,
 };
 
 #[multiversx_sc::module]
@@ -33,14 +34,15 @@ pub trait RewardsModule:
     #[view(getClaimableRewards)]
     fn get_claimable_rewards(
         &self,
-        share_tokens: MultiValueEncoded<ShareToken<Self::Api>>,
+        share_tokens: MultiValueEncoded<ShareTokenType<Self::Api>>,
     ) -> BigUint {
         let current_timestamp_ms = self.blockchain().get_block_timestamp_ms();
 
         let mut rewards = BigUint::zero();
         for share_token in share_tokens.into_iter() {
+            let (nonce, amount) = share_token.into_tuple();
             rewards += self
-                .calculate_reward(share_token.nonce, &share_token.amount, current_timestamp_ms)
+                .calculate_reward(nonce, &amount, current_timestamp_ms)
                 .reward_amount;
         }
 
@@ -85,6 +87,7 @@ pub trait RewardsModule:
         token_merged_data
     }
 
+    #[view(test)]
     fn get_share_token_attributes(&self, nonce: u64) -> ShareTokenAttributes<Self::Api> {
         self.share_token().get_token_attributes(nonce)
     }

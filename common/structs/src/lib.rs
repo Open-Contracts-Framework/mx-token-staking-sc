@@ -31,6 +31,10 @@ pub struct ShareToken<M: ManagedTypeApi> {
     pub amount: BigUint<M>,
 }
 
+pub type Nonce = u64;
+pub type Amount<M> = BigUint<M>;
+pub type ShareTokenType<M> = MultiValue2<Nonce, Amount<M>>;
+
 #[type_abi]
 #[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, Clone, Eq, Debug, ManagedVecItem)]
 pub struct ShareTokenAttributes<M: ManagedTypeApi> {

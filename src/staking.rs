@@ -1,6 +1,6 @@
 use errors::{
     ERROR_INVALID_SHARE_TOKEN, ERROR_ONLY_ONE_STAKING_TRANSFER_ALLOWED, ERROR_STAKED_TOKEN_MISSING,
-    ERROR_UNSTAKE_AMOUNT_EXCEEDS,
+    ERROR_UNSTAKE_AMOUNT_EXCEEDS, ERROR_ZERO_AMOUNT,
 };
 use multiversx_sc::imports::*;
 
@@ -27,22 +27,30 @@ pub trait StakingModule:
         let (staking_transfer, share_transfers) =
             self.split_transfers(&transfers, &staked_token, &share_token);
 
-        let token_merged_data = self.claim_rewards(&caller, current_timestamp_ms, &share_transfers);
+        let mut new_staked_amount = staking_transfer.amount.clone();
+        require!(new_staked_amount > BigUint::zero(), ERROR_ZERO_AMOUNT);
+
+        let mut rewards_claimed = BigUint::zero();
+
+        if !share_transfers.is_empty() {
+            let token_merged_data =
+                self.claim_rewards(&caller, current_timestamp_ms, &share_transfers);
+
+            new_staked_amount += token_merged_data.token_supply;
+            rewards_claimed = token_merged_data.reward_amount;
+        }
 
         self.share_token().nft_create_and_send(
             &caller,
-            token_merged_data.token_supply.clone() + &staking_transfer.amount,
-            &self.attributes_to_buffer(
-                current_timestamp_ms,
-                token_merged_data.token_supply.clone() + &staking_transfer.amount,
-            ),
+            new_staked_amount.clone(),
+            &self.attributes_to_buffer(current_timestamp_ms, new_staked_amount.clone()),
         );
 
         self.event_staked(
             &caller,
             &staking_transfer.amount,
-            &token_merged_data.token_supply,
-            &token_merged_data.reward_amount,
+            &new_staked_amount,
+            &rewards_claimed,
         );
     }
 

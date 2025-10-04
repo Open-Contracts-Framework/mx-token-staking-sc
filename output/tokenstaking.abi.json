@@ -258,13 +258,28 @@
             "inputs": [
                 {
                     "name": "share_tokens",
-                    "type": "variadic<ShareToken>",
+                    "type": "variadic<multi<u64,BigUint>>",
                     "multi_arg": true
                 }
             ],
             "outputs": [
                 {
                     "type": "BigUint"
+                }
+            ]
+        },
+        {
+            "name": "test",
+            "mutability": "readonly",
+            "inputs": [
+                {
+                    "name": "nonce",
+                    "type": "u64"
+                }
+            ],
+            "outputs": [
+                {
+                    "type": "ShareTokenAttributes"
                 }
             ]
         }
@@ -499,15 +514,15 @@
                 }
             ]
         },
-        "ShareToken": {
+        "ShareTokenAttributes": {
             "type": "struct",
             "fields": [
                 {
-                    "name": "nonce",
+                    "name": "update_ts_ms",
                     "type": "u64"
                 },
                 {
-                    "name": "amount",
+                    "name": "token_supply",
                     "type": "BigUint"
                 }
             ]

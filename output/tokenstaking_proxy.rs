@@ -290,7 +290,7 @@ where
     }
 
     pub fn get_claimable_rewards<
-        Arg0: ProxyArg<MultiValueEncoded<Env::Api, structs::ShareToken<Env::Api>>>,
+        Arg0: ProxyArg<MultiValueEncoded<Env::Api, MultiValue2<u64, BigUint<Env::Api>>>>,
     >(
         self,
         share_tokens: Arg0,
@@ -299,6 +299,19 @@ where
             .payment(NotPayable)
             .raw_call("getClaimableRewards")
             .argument(&share_tokens)
+            .original_result()
+    }
+
+    pub fn get_share_token_attributes<
+        Arg0: ProxyArg<u64>,
+    >(
+        self,
+        nonce: Arg0,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, structs::ShareTokenAttributes<Env::Api>> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("test")
+            .argument(&nonce)
             .original_result()
     }
 }

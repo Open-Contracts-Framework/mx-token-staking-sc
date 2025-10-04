@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                           18
+// Endpoints:                           19
 // Async Callback:                       1
-// Total number of exported functions:  21
+// Total number of exported functions:  22
 
 #![no_std]
 
@@ -38,6 +38,7 @@ multiversx_sc_wasm_adapter::endpoints! {
         unstake => unstake
         claimRewards => claim_rewards_endpoint
         getClaimableRewards => get_claimable_rewards
+        test => get_share_token_attributes
     )
 }
 
