@@ -7,4 +7,3 @@ pub static MAX_PERCENTAGE: u64 = 10_000;
 pub static TOKEN_ISSUANCE_COST: u64 = 50_000_000_000_000_000;
 
 pub static WAD_DECIMALS: usize = 18;
-pub static WAD: u64 = 1_000_000_000_000_000_000;
