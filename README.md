@@ -1,11 +1,11 @@
 # MultiversX Token Staking Smart Contract
 
-A comprehensive smart contract that enables users to stake tokens in farms and earn time-based rewards on the MultiversX blockchain.
+A comprehensive smart contract that enables users to stake tokens in a single farm and earn time-based rewards on the MultiversX blockchain.
 
 ## Overview
 
 This smart contract implements a token staking mechanism where users can:
-- Stake tokens in farms and receive share tokens (NFTs) representing their stake
+- Stake tokens in a farm and receive share tokens (NFTs) representing their stake
 - Earn rewards over time based on configurable reward rates
 - Claim accumulated rewards or have them auto-claimed during operations
 - Unstake tokens by burning share tokens to retrieve original tokens plus rewards
@@ -14,7 +14,7 @@ This smart contract implements a token staking mechanism where users can:
 ## Key Features
 
 ### 🏭 **Farm Management**
-- Create and configure staking farms with custom parameters
+- Create and configure a single staking farm with custom parameters
 - Set staking tokens, reward tokens, and reward rates
 - Define farm duration with start/end timestamps
 - Manage rewards reserve funding
@@ -61,12 +61,16 @@ wasm/                   # WebAssembly build configuration
 
 ## How It Works
 
-1. **Farm Setup**: Contract owner creates farms with staking/reward token pairs and reward parameters
+1. **Farm Setup**: Contract owner creates a single farm with staking/reward token pairs and reward parameters
 2. **Token Staking**: Users stake tokens and receive share tokens (NFTs) representing their stake position
 3. **Reward Accrual**: Rewards accumulate continuously based on stake amount, duration, and farm reward rate
 4. **Share Token Management**: Multiple share tokens can be merged automatically to reduce NFT clutter
 5. **Reward Claiming**: Users can claim rewards manually or automatically during staking/unstaking operations
 6. **Unstaking**: Users burn share tokens to retrieve original staked tokens plus accumulated rewards
+
+## Multiple Farms
+
+This contract is designed to manage a single farm per deployment. For multiple farms, deploy this contract multiple times as a template, with each deployment configured for a specific staking/reward token pair.
 
 ## License
 

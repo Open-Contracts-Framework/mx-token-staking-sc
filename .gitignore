@@ -23,6 +23,7 @@ interaction/
 /output/*
 !/output/*.abi.json
 !/output/*_proxy.rs
+!/output/*.md
 
 # Ignore all .env files except the example
 .env*
